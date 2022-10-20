@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Providers\AdamTestServiceProvider;
-use App\Providers\AppServiceProvider;
-use App\Providers\WeatherServiceProvider;
+use App\Models\WeatherModelException;
+use App\Services\Api\ErrorResponse;
+use App\Services\Api\SuccessResponse;
+use App\Services\Weather\OpenWeather;
+use App\Services\Weather\WeatherServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\ResponseFactory;
 
 class WeatherController extends Controller
 {
-    //private WeatherProvider $weatherProvider;
-    private AdamTestServiceProvider $test;
     private ResponseFactory $jsonResponseFactory;
+
+    //todo put back
+    //private WeatherServiceInterface $weather;
+    private OpenWeather $weather;
+
+    // debug flag set to true to return sensitive debug info with on error.
+    private bool $debug = false;
 
     /**
      * Instantiate a new controller instance.
@@ -20,17 +27,28 @@ class WeatherController extends Controller
      * @return void
      */
     public function __construct(
-        WeatherServiceProvider $weatherProvider,
-        //AdamTestServiceProvider $test,
-        //AppServiceProvider $test,
+        WeatherServiceInterface $weather,
         ResponseFactory $jsonResponseFactory,
     )
     {
-        //$this->weatherProvider = $weatherProvider;
         $this->jsonResponseFactory = $jsonResponseFactory;
-        //$this->test = $test;
+        $this->weather = $weather;
+
+        // set this flag based on config setting (ie false for live server)
+        // or user privileges etc.
+        $this->debug = true;
     }
 
+    /**
+     */
+    public function getCities()
+    {
+        try {
+            return $this->successResponse($this->weather->getCities());
+        } catch (WeatherModelException $e) {
+            return $this->ExcptionResponse($e);
+        }
+    }
 
     /**
      * Show the profile for a given user.
@@ -40,14 +58,36 @@ class WeatherController extends Controller
      */
     public function get($id)
     {
-        $weatherData = \App\Providers\WeatherServiceProvider::get();
 
-        return $this->jsonResponseFactory->json(
-            [
-                'succes' => 'success',
-                'route' => '/weather/' . $id,
-                'payload' => $weatherData
-            ]
-        );
+        $weatherData = $this->weather->get();
+
+        return $this->successResponse($weatherData);
+    }
+
+    private function successResponse(array|\JsonSerializable $payload)
+    {
+        return  $this
+            ->jsonResponseFactory
+            ->json(new SuccessResponse($payload));
+    }
+
+    private function excptionResponse(\Exception $e)
+    {
+        if ($this->debug) {
+            return $this
+                ->jsonResponseFactory
+                ->json(
+                    new ErrorResponse(
+                        $e->getMessage(),
+                        $e->getTraceAsString()
+                    )
+                );
+        } else {
+            return $this
+                ->jsonResponseFactory
+                ->json(
+                    new ErrorResponse('Server Error')
+                );
+        }
     }
 }

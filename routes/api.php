@@ -22,7 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/weather/{id}', [WeatherController::class, 'get']);
+Route::get('/weather/forecast/cityId/{id}', [WeatherController::class, 'getForecastByCityId']);
+
+Route::get('/weather/cities', [WeatherController::class, 'getCities']);
 
 
 //Route::get('/weather/{id}', function ($id) {

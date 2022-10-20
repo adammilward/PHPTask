@@ -200,7 +200,6 @@ return [
          * Adam's service providers
          */
         App\Providers\WeatherServiceProvider::class,
-        App\Providers\AdamTestServiceProvider::class,
     ],
 
     /*
