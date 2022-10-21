@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\WeatherModelException;
-use App\Services\Api\ErrorResponse;
-use App\Services\Api\SuccessResponse;
-use App\Services\Weather\OpenWeather;
-use App\Services\Weather\WeatherServiceInterface;
+use App\Services\APIs\ExceptionResponse;
+use App\Services\APIs\SuccessResponse;
+use App\Services\APIs\Weather\OpenWeatherService;
+use App\Services\APIs\Weather\WeatherServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\ResponseFactory;
 
@@ -16,7 +16,7 @@ class WeatherController extends Controller
 
     //todo put back
     //private WeatherServiceInterface $weather;
-    private OpenWeather $weather;
+    private OpenWeatherService $weather;
 
     // debug flag set to true to return sensitive debug info with on error.
     private bool $debug = false;
@@ -41,27 +41,13 @@ class WeatherController extends Controller
 
     /**
      */
-    public function getCities()
+    public function getAllCities()
     {
         try {
-            return $this->successResponse($this->weather->getCities());
+            return $this->successResponse($this->weather->getAllCities());
         } catch (WeatherModelException $e) {
             return $this->ExcptionResponse($e);
         }
-    }
-
-    /**
-     * Show the profile for a given user.
-     *
-     * @param  int  $id
-     * @return JsonResponse
-     */
-    public function get($id)
-    {
-
-        $weatherData = $this->weather->get();
-
-        return $this->successResponse($weatherData);
     }
 
     private function successResponse(array|\JsonSerializable $payload)
@@ -77,8 +63,9 @@ class WeatherController extends Controller
             return $this
                 ->jsonResponseFactory
                 ->json(
-                    new ErrorResponse(
+                    new ExceptionResponse(
                         $e->getMessage(),
+                        get_class($e),
                         $e->getTraceAsString()
                     )
                 );
@@ -86,8 +73,31 @@ class WeatherController extends Controller
             return $this
                 ->jsonResponseFactory
                 ->json(
-                    new ErrorResponse('Server Error')
+                    new ExceptionResponse('The server encountered and error processing your request')
                 );
         }
+    }
+
+    public function getForecastByCityId(int $id)
+    {
+        $weatherData = $this->weather->getForecastByCityId($id);
+        return $this->successResponse($weatherData);
+    }
+
+    public function getCityById(int $id)
+    {
+        // TODO: Implement getCityById() method.
+    }
+
+    public function getCityByName(string $cityName)
+    {
+        // TODO: Implement getCityByName() method.
+    }
+
+    public function matchCityNames(string $nameString): JsonResponse
+    {
+        return  $this
+            ->jsonResponseFactory
+            ->json(new SuccessResponse($this->weather->matchCityNames($nameString)));
     }
 }

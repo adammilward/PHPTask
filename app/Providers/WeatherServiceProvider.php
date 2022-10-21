@@ -3,10 +3,9 @@
 namespace App\Providers;
 
 use App\Models\OpenWeatherModel;
-use App\Services\Weather\OpenWeather;
-use App\Services\Weather\WeatherServiceInterface;
+use App\Services\APIs\Weather\OpenWeatherService;
+use App\Services\APIs\Weather\WeatherServiceInterface;
 use Illuminate\Filesystem\FilesystemManager;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 class WeatherServiceProvider extends ServiceProvider
@@ -20,7 +19,7 @@ class WeatherServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(WeatherServiceInterface::class, function ($app) {
-            return new OpenWeather(
+            return new OpenWeatherService(
                 new OpenWeatherModel(new FilesystemManager($app))
             );
         });

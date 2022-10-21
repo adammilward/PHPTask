@@ -92,4 +92,9 @@ class OpenWeatherModel extends Model
         return $data;
 
     }
+
+    public function getCitiesMatching(string $nameString): array
+    {
+        return [$nameString];
+    }
 }

@@ -17,24 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/weather/forecast/cityId/{id}',  [WeatherController::class, 'getForecastByCityId']);
 
+Route::get('/weather/city/id/{id}',  [WeatherController::class, 'getCityById']);
 
-Route::get('/weather/forecast/cityId/{id}', [WeatherController::class, 'getForecastByCityId']);
+Route::get('/weather/allCities', [WeatherController::class, 'getAllCities']);
 
-Route::get('/weather/cities', [WeatherController::class, 'getCities']);
+Route::get('/weather/city/cityName/{cityName}',  [WeatherController::class, 'getCityByName']);
 
+Route::get('/weather/cities/match/{nameString}',  [WeatherController::class, 'matchCityNames']);
 
-//Route::get('/weather/{id}', function ($id) {
-//    $weatherData = \App\Providers\WeatherProvider::get();
-//    return [
-//        'succes' => 'success',
-//        'route' => '/weather/' . $id,
-//        'payload' => [$weatherData]
-//    ];
-//});
 
 // todo delete if not working
 //Route::resource('weather', WeatherController::class)
