@@ -129,7 +129,13 @@ class OpenWeatherModel extends Model
         throw new CityNotFoundException();
     }
 
-    public function getCityNearest(float $lat, float $lon)
+    /**
+     * @param float $lat
+     * @param float $lon
+     * @return ForecastCity
+     * @throws WeatherModelException
+     */
+    public function getCityNearest(float $lat, float $lon): ForecastCity
     {
         return $this->buildCityFromArray(
             $this->findCityNearest(
@@ -140,6 +146,12 @@ class OpenWeatherModel extends Model
         );
     }
 
+    /**
+     * @param array $cities
+     * @param float $lat
+     * @param float $lon
+     * @return array - array of city data
+     */
     private function findCityNearest(
         array $cities,
         float $lat,

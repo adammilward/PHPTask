@@ -38,7 +38,7 @@ class ErrorResponse implements \JsonSerializable
         $this->type = $type;
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return  [
             'error' => 'error',

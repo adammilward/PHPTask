@@ -182,7 +182,6 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-
         /*
          * Package Service Providers...
          */
@@ -197,7 +196,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         /*
-         * Adam's service providers
+         * Custom service providers
          */
         App\Providers\WeatherServiceProvider::class,
     ],

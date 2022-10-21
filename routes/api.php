@@ -17,14 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/*
+|--------------------------------------------------------------------------
+| Weather API Routes
+|--------------------------------------------------------------------------
+*/
 Route::get('/weather/forecast/cityId/{id}',  [WeatherController::class, 'getForecastByCityId']);
-
 Route::get('/weather/city/id/{id}',  [WeatherController::class, 'getCityById']);
-
 Route::get('/weather/allCities', [WeatherController::class, 'getAllCities']);
-
 Route::get('/weather/cities/match/{nameString}',  [WeatherController::class, 'matchCityNames']);
-
 Route::get('/weather/city/lat/{lat}/lon/{lon}',  [WeatherController::class, 'getCityNearest']);
 
 // todo delete if not working

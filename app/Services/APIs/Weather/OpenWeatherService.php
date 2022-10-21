@@ -28,6 +28,12 @@ class OpenWeatherService implements WeatherServiceInterface
         return $this->model->getAllCities();
     }
 
+    /**
+     * @param int $cityId
+     * @return WeatherForecastData
+     * @throws \App\Models\CityNotFoundException
+     * @throws \App\Models\WeatherModelException
+     */
     public function getForecastByCityId(int $cityId): WeatherForecastData
     {
         $apiKey = $this->model->getApiKey();
@@ -64,6 +70,12 @@ class OpenWeatherService implements WeatherServiceInterface
         return $this->model->getCityById($id);
     }
 
+    /**
+     * @param float $lat
+     * @param float $lon
+     * @return ForecastCity
+     * @throws \App\Models\WeatherModelException
+     */
     public function getCityNearest(float $lat, float $lon): ForecastCity
     {
         return $this->model->getCityNearest($lat, $lon);
@@ -79,6 +91,12 @@ class OpenWeatherService implements WeatherServiceInterface
         return $this->model->getCitiesMatching($nameString);
     }
 
+    /**
+     * @param array $data
+     * @return WeatherForecastData
+     * @throws \App\Models\CityNotFoundException
+     * @throws \App\Models\WeatherModelException
+     */
     private function buildForecastFromData(array $data): WeatherForecastData
     {
         return new WeatherForecastData(

@@ -27,7 +27,7 @@ class SuccessResponse implements \JsonSerializable
     /**
      * @return mixed
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return  [
             'success' => 'success',

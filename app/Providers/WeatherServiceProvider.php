@@ -10,7 +10,6 @@ use Illuminate\Support\ServiceProvider;
 
 class WeatherServiceProvider extends ServiceProvider
 {
-
     /**
      * Register services.
      *
@@ -23,15 +22,5 @@ class WeatherServiceProvider extends ServiceProvider
                 new OpenWeatherModel(new FilesystemManager($app))
             );
         });
-    }
-
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
     }
 }

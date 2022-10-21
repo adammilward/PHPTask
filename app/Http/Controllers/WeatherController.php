@@ -6,7 +6,6 @@ use App\Models\CityNotFoundException;
 use App\Models\ForecastCity;
 use App\Services\APIs\ErrorResponse;
 use App\Services\APIs\SuccessResponse;
-use App\Services\APIs\Weather\OpenWeatherService;
 use App\Services\APIs\Weather\WeatherServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\ResponseFactory;
@@ -15,18 +14,12 @@ class WeatherController extends Controller
 {
     private ResponseFactory $jsonResponseFactory;
 
-    //todo put back
-    //private WeatherServiceInterface $weather;
-    private OpenWeatherService $weather;
+    private WeatherServiceInterface $weather;
 
-    // debug flag set to true to return sensitive debug info with on error.
+    // debug flag set to true to exception trace and class name
+    // ! caution should be false on live server.
     private bool $debug = false;
 
-    /**
-     * Instantiate a new controller instance.
-     *
-     * @return void
-     */
     public function __construct(
         WeatherServiceInterface $weather,
         ResponseFactory $jsonResponseFactory,
@@ -34,13 +27,14 @@ class WeatherController extends Controller
     {
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->weather = $weather;
-
-        // set this flag based on config setting (ie false for live server)
-        // or user privileges etc.
-        $this->debug = true;
     }
 
-
+    /**
+     * Api route /weather/allCities
+     * returns all cities currently in storage
+     *
+     * @return JsonResponse
+     */
     public function getAllCities()
     {
         try {
@@ -50,6 +44,13 @@ class WeatherController extends Controller
         }
     }
 
+    /**
+     * Api route /weather/forecast/cityId/{id}
+     * Returns a forecast for city id
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
     public function getForecastByCityId(int $id): JsonResponse
     {
         $weatherData = $this->weather->getForecastByCityId($id);
@@ -57,6 +58,9 @@ class WeatherController extends Controller
     }
 
     /**
+     * Api route /weather/city/id/{id}
+     * returns city data by id.
+     *
      * @param int $id
      * @return JsonResponse
      */
@@ -77,12 +81,26 @@ class WeatherController extends Controller
         }
     }
 
+    /**
+     * Api route /weather/city/lat/{lat}/lon/{lon}
+     * returns the nearest city to the provided coordinates
+     * (in decimal degrees)
+     *
+     * @param float $lat
+     * @param float $lon
+     * @return ForecastCity
+     */
     public function getCityNearest(float $lat, float $lon): ForecastCity
     {
         return $this->weather->getCityNearest($lat, $lon);
     }
 
     /**
+     * Api route /weather/cities/match/{nameString}
+     * returns cities matching the string provided
+     * Exact match first, followed by cities starting with $nameString
+     * followed by city names containing $nameString
+     *
      * @param string $nameString
      * @return JsonResponse
      */
@@ -96,6 +114,15 @@ class WeatherController extends Controller
         }
     }
 
+    /**
+     * Use for returning a consistent success response containing the payload.
+     * Payload data should be in objects to ensure correct value types.
+     * This could restrict the payload to a set of permitted Serializable Objects, to
+     * prevent uncontrolled bundles of data in jagged arrays being sent to the client.
+     *
+     * @param array|\JsonSerializable $payload - should be a typed array or JsonSerializable object
+     * @return JsonResponse
+     */
     private function successResponse(array|\JsonSerializable $payload): JsonResponse
     {
         return  $this
@@ -103,6 +130,12 @@ class WeatherController extends Controller
             ->json(new SuccessResponse($payload));
     }
 
+    /**
+     * Returns a consistent error response to the client.
+     *
+     * @param \Exception $e
+     * @return JsonResponse
+     */
     private function excptionResponse(\Exception $e)
     {
         if ($this->debug) {
