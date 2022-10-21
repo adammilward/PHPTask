@@ -19,4 +19,6 @@ Interface WeatherServiceInterface
     public function getAllCities(): array;
 
     public function matchCityNames(string $nameString): array;
+
+    public function getCityNearest(float $lat, float $lon): ForecastCity;
 }

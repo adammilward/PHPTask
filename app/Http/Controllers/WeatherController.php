@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\CityNotFoundException;
+use App\Models\ForecastCity;
 use App\Services\APIs\ErrorResponse;
 use App\Services\APIs\SuccessResponse;
 use App\Services\APIs\Weather\OpenWeatherService;
-use App\Services\APIs\Weather\WeatherForecastData;
 use App\Services\APIs\Weather\WeatherServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\ResponseFactory;
@@ -75,6 +75,11 @@ class WeatherController extends Controller
         } catch (\Exception $e) {
             return $this->ExcptionResponse($e);
         }
+    }
+
+    public function getCityNearest(float $lat, float $lon): ForecastCity
+    {
+        return $this->weather->getCityNearest($lat, $lon);
     }
 
     /**

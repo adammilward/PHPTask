@@ -13,14 +13,24 @@ use Illuminate\Filesystem\FilesystemManager;
  * however my computer's mysql server is not working,
  * I hope this is sufficient for proof of concept.
  *
+ * Open weather API reference can be found here
+ * https://openweathermap.org/current#one
+ *
  * @package App\Models
  */
 class OpenWeatherModel extends Model
 {
     use HasFactory;
 
+    /**
+     * https://home.openweathermap.org/api_keys
+     */
     const CONFIG_API_KEY = 'openWeather.apiKey';
 
+    /**
+     * file can be downloaded from:
+     * https://openweathermap.org/current#bulk
+     */
     const CONFIG_FILE_PATH = 'openWeather.citiesFilePath';
 
     private FilesystemManager $fileManager;
@@ -38,7 +48,7 @@ class OpenWeatherModel extends Model
      * @return string
      * @throws WeatherModelException
      */
-    private function getApiKey(): string {
+    public function getApiKey(): string {
         $apiKey = config(self::CONFIG_API_KEY);
         if (! is_string($apiKey)) {
             throw new WeatherModelException(
@@ -75,30 +85,6 @@ class OpenWeatherModel extends Model
         $citiesJson = json_decode($citiesFileContents, true);
 
         return $citiesJson;
-    }
-
-    public function getWeatherForId(int $cityId)
-    {
-
-        $apiKey = $this->getApiKey();
-        $googleApiUrl = "https://api.openweathermap.org/data/2.5/weather?id=" . $cityId . "&lang=en&units=metric&APPID=" . $apiKey;
-
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_URL, $googleApiUrl);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_VERBOSE, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $response = curl_exec($ch);
-
-        curl_close($ch);
-        $data = json_decode($response);
-        $currentTime = time();
-
-        return $data;
-
     }
 
     /**
@@ -143,6 +129,45 @@ class OpenWeatherModel extends Model
         throw new CityNotFoundException();
     }
 
+    public function getCityNearest(float $lat, float $lon)
+    {
+        return $this->buildCityFromArray(
+            $this->findCityNearest(
+                $this->getAllCities(),
+                $lat,
+                $lon
+            )
+        );
+    }
+
+    private function findCityNearest(
+        array $cities,
+        float $lat,
+        float $lon
+    ): array
+    {
+        $nearestCity = reset($cities);
+        $nearestCityDistance = $this->calcDistance(
+            $nearestCity['coord']['lat'],
+            $nearestCity['coord']['lon'],
+            $lat,
+            $lon
+        );
+        foreach ($cities as $city) {
+            $distance = $this->calcDistance(
+                $city['coord']['lat'],
+                $city['coord']['lon'],
+                $lat,
+                $lon
+            );
+            if ($distance < $nearestCityDistance) {
+                $nearestCityDistance = $distance;
+                $nearestCity = $city;
+            }
+        }
+        return $nearestCity;
+    }
+
     /***
      * @param array $city
      * @return ForecastCity
@@ -156,5 +181,41 @@ class OpenWeatherModel extends Model
             $city['coord']['lat'],
             $city['coord']['lon'],
         );
+    }
+
+    /**
+     * use Haversine Formula to calculate nearest distance between two points
+     *
+     * @param float $cityLat
+     * @param float $cityLon
+     * @param float $lat
+     * @param float $lon
+     * @return float
+     */
+    private function calcDistance(
+        float $cityLat,
+        float $cityLon,
+        float $lat,
+        float $lon
+    )
+    {
+        // convert to rad
+        $cityLat = deg2rad($cityLat);
+        $cityLon = deg2rad($cityLon);
+        $lat = deg2rad($lat);
+        $lon = deg2rad($lon);
+
+        //Haversine Formula
+        $dlong = $cityLon - $lon;
+        $dlati = $cityLat - $lat;
+
+        $val =
+            pow(sin($dlati / 2),2)
+                +
+            cos($cityLat) * cos($lat) * pow(sin($dlong / 2), 2);
+
+        $res = asin(sqrt($val));
+
+        return ($res);
     }
 }

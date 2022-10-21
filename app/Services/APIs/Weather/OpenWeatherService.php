@@ -28,11 +28,29 @@ class OpenWeatherService implements WeatherServiceInterface
         return $this->model->getAllCities();
     }
 
-
-    public function getForecastByCityId(int $id): WeatherForecastData
+    public function getForecastByCityId(int $cityId): WeatherForecastData
     {
-        $data = $this->model->getWeatherForId(123);
-        return $data;
+        $apiKey = $this->model->getApiKey();
+        $googleApiUrl =
+            "https://api.openweathermap.org/data/2.5/weather?id="
+            . $cityId
+            . "&lang=en&units=metric&APPID="
+            . $apiKey;
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $googleApiUrl);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_VERBOSE, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+        $data = json_decode($response, true);
+
+        return $this->buildForecastFromData($data);
     }
 
     /**
@@ -46,6 +64,11 @@ class OpenWeatherService implements WeatherServiceInterface
         return $this->model->getCityById($id);
     }
 
+    public function getCityNearest(float $lat, float $lon): ForecastCity
+    {
+        return $this->model->getCityNearest($lat, $lon);
+    }
+
     /**
      * @param string $nameString
      * @return array
@@ -54,5 +77,22 @@ class OpenWeatherService implements WeatherServiceInterface
     public function matchCityNames(string $nameString): array
     {
         return $this->model->getCitiesMatching($nameString);
+    }
+
+    private function buildForecastFromData(array $data): WeatherForecastData
+    {
+        return new WeatherForecastData(
+            $this->getCityById($data['id']),
+            $data['weather'][0]['main'],
+            $data['weather'][0]['description'],
+            $data['main']['temp'],
+            $data['main']['temp_min'],
+            $data['main']['temp_max'],
+            $data['main']['pressure'],
+            $data['main']['humidity'],
+            $data['wind']['speed'],
+            $data['wind']['deg'],
+            $data['wind']['gust'],
+        );
     }
 }

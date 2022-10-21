@@ -25,6 +25,7 @@ Route::get('/weather/allCities', [WeatherController::class, 'getAllCities']);
 
 Route::get('/weather/cities/match/{nameString}',  [WeatherController::class, 'matchCityNames']);
 
+Route::get('/weather/city/lat/{lat}/lon/{lon}',  [WeatherController::class, 'getCityNearest']);
 
 // todo delete if not working
 //Route::resource('weather', WeatherController::class)
