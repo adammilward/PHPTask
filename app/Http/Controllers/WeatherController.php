@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\WeatherModelException;
-use App\Services\APIs\ExceptionResponse;
+use App\Models\CityNotFoundException;
+use App\Services\APIs\ErrorResponse;
 use App\Services\APIs\SuccessResponse;
 use App\Services\APIs\Weather\OpenWeatherService;
+use App\Services\APIs\Weather\WeatherForecastData;
 use App\Services\APIs\Weather\WeatherServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\ResponseFactory;
@@ -39,18 +40,58 @@ class WeatherController extends Controller
         $this->debug = true;
     }
 
-    /**
-     */
+
     public function getAllCities()
     {
         try {
             return $this->successResponse($this->weather->getAllCities());
-        } catch (WeatherModelException $e) {
+        } catch (\Exception $e) {
             return $this->ExcptionResponse($e);
         }
     }
 
-    private function successResponse(array|\JsonSerializable $payload)
+    public function getForecastByCityId(int $id): JsonResponse
+    {
+        $weatherData = $this->weather->getForecastByCityId($id);
+        return $this->successResponse($weatherData);
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function getCityById(int $id): JsonResponse
+    {
+        try {
+            return $this->successResponse($this->weather->getCityById($id));
+        } catch (CityNotFoundException $e) {
+            return $this
+                ->jsonResponseFactory
+                ->json(new ErrorResponse(
+                    'No city was found matching id ' . $id,
+                    'CityNotFound'
+                )
+            );
+        } catch (\Exception $e) {
+            return $this->ExcptionResponse($e);
+        }
+    }
+
+    /**
+     * @param string $nameString
+     * @return JsonResponse
+     */
+    public function matchCityNames(string $nameString): JsonResponse
+    {
+        $nameString  = trim($nameString);
+        try {
+            return $this->successResponse($this->weather->matchCityNames($nameString));
+        } catch (\Exception $e) {
+            return $this->ExcptionResponse($e);
+        }
+    }
+
+    private function successResponse(array|\JsonSerializable $payload): JsonResponse
     {
         return  $this
             ->jsonResponseFactory
@@ -63,7 +104,7 @@ class WeatherController extends Controller
             return $this
                 ->jsonResponseFactory
                 ->json(
-                    new ExceptionResponse(
+                    new ErrorResponse(
                         $e->getMessage(),
                         get_class($e),
                         $e->getTraceAsString()
@@ -73,31 +114,8 @@ class WeatherController extends Controller
             return $this
                 ->jsonResponseFactory
                 ->json(
-                    new ExceptionResponse('The server encountered and error processing your request')
+                    new ErrorResponse('The server encountered and error processing your request')
                 );
         }
-    }
-
-    public function getForecastByCityId(int $id)
-    {
-        $weatherData = $this->weather->getForecastByCityId($id);
-        return $this->successResponse($weatherData);
-    }
-
-    public function getCityById(int $id)
-    {
-        // TODO: Implement getCityById() method.
-    }
-
-    public function getCityByName(string $cityName)
-    {
-        // TODO: Implement getCityByName() method.
-    }
-
-    public function matchCityNames(string $nameString): JsonResponse
-    {
-        return  $this
-            ->jsonResponseFactory
-            ->json(new SuccessResponse($this->weather->matchCityNames($nameString)));
     }
 }

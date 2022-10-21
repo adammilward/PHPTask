@@ -23,8 +23,6 @@ Route::get('/weather/city/id/{id}',  [WeatherController::class, 'getCityById']);
 
 Route::get('/weather/allCities', [WeatherController::class, 'getAllCities']);
 
-Route::get('/weather/city/cityName/{cityName}',  [WeatherController::class, 'getCityByName']);
-
 Route::get('/weather/cities/match/{nameString}',  [WeatherController::class, 'matchCityNames']);
 
 

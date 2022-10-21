@@ -15,7 +15,7 @@ namespace App\Services\APIs;
  *
  * @package App\Services\Api
  */
-class ExceptionResponse implements \JsonSerializable
+class ErrorResponse implements \JsonSerializable
 {
 
     private string $exceptionMessage;

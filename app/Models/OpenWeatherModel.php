@@ -5,15 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Filesystem\FilesystemManager;
-use Illuminate\Support\Facades\Storage;
 
+/**
+ * Data storage for OpenWeatherService
+ *
+ * Ideally this would use a database rather than flat files,
+ * however my computer's mysql server is not working,
+ * I hope this is sufficient for proof of concept.
+ *
+ * @package App\Models
+ */
 class OpenWeatherModel extends Model
 {
     use HasFactory;
 
     const CONFIG_API_KEY = 'openWeather.apiKey';
 
-    const CONFIG_FILE_PATH = 'openWeather.citiesFilePat h';
+    const CONFIG_FILE_PATH = 'openWeather.citiesFilePath';
 
     private FilesystemManager $fileManager;
 
@@ -48,7 +56,7 @@ class OpenWeatherModel extends Model
      * @return array
      * @throws WeatherModelException
      */
-    public function getCities(): array
+    public function getAllCities(): array
     {
         $citiesPath = config(self::CONFIG_FILE_PATH);
         if (! is_string($citiesPath)) {
@@ -64,7 +72,7 @@ class OpenWeatherModel extends Model
         if (! is_string($citiesFileContents) || ! $citiesFileContents) {
             throw new WeatherModelException("File $citiesPath returned an invalid string");
         }
-        $citiesJson = json_decode($citiesFileContents);
+        $citiesJson = json_decode($citiesFileContents, true);
 
         return $citiesJson;
     }
@@ -93,8 +101,60 @@ class OpenWeatherModel extends Model
 
     }
 
+    /**
+     * @param string $nameString
+     * @return array
+     * @throws WeatherModelException
+     */
     public function getCitiesMatching(string $nameString): array
     {
-        return [$nameString];
+        $nameString = strtolower($nameString);
+        $exact = [];
+        $startsWith = [];
+        $contains = [];
+        foreach ($this->getAllCities() as $city) {
+            if (strtolower($city['name']) === $nameString) {
+                $exact = [$this->buildCityFromArray($city)];
+            } else {
+                $stripos = stripos($city['name'], $nameString);
+                if  ($stripos === 0) {
+                    array_push($startsWith, $this->buildCityFromArray($city));
+                } elseif ($stripos > 1) {
+                    array_push($contains, $this->buildCityFromArray($city));
+                }
+            }
+        }
+        return array_merge($exact, $startsWith, $contains);
+    }
+
+    /**
+     * @param int $id
+     * @return ForecastCity
+     * @throws CityNotFoundException
+     * @throws WeatherModelException
+     */
+    public function getCityById(int $id): ForecastCity
+    {
+        foreach ($this->getAllCities() as $city) {
+            if ($city['id'] === $id) {
+                return $this->buildCityFromArray($city);
+            }
+        }
+        throw new CityNotFoundException();
+    }
+
+    /***
+     * @param array $city
+     * @return ForecastCity
+     */
+    private function buildCityFromArray(array $city): ForecastCity
+    {
+        return new ForecastCity(
+            $city['id'],
+            $city['name'],
+            $city['country'],
+            $city['coord']['lat'],
+            $city['coord']['lon'],
+        );
     }
 }

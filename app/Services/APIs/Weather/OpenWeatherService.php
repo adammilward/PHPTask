@@ -7,6 +7,7 @@
 
 namespace App\Services\APIs\Weather;
 
+use App\Models\ForecastCity;
 use App\Models\OpenWeatherModel;
 
 class OpenWeatherService implements WeatherServiceInterface
@@ -24,26 +25,32 @@ class OpenWeatherService implements WeatherServiceInterface
      */
     public function getAllCities(): array
     {
-        return $this->model->getCities();
+        return $this->model->getAllCities();
     }
 
-    public function getForecastByCityId(int $id)
+
+    public function getForecastByCityId(int $id): WeatherForecastData
     {
         $data = $this->model->getWeatherForId(123);
         return $data;
     }
 
-    public function getCityById(int $id)
+    /**
+     * @param int $id
+     * @return ForecastCity
+     * @throws \App\Models\CityNotFoundException
+     * @throws \App\Models\WeatherModelException
+     */
+    public function getCityById(int $id): ForecastCity
     {
-        // TODO: Implement getCityById() method.
+        return $this->model->getCityById($id);
     }
 
-
-    public function getCityByName(string $cityName)
-    {
-        // TODO: Implement getCityByName() method.
-    }
-
+    /**
+     * @param string $nameString
+     * @return array
+     * @throws \App\Models\WeatherModelException
+     */
     public function matchCityNames(string $nameString): array
     {
         return $this->model->getCitiesMatching($nameString);

@@ -8,15 +8,15 @@
 namespace App\Services\APIs\Weather;
 
 
+use App\Models\ForecastCity;
+
 Interface WeatherServiceInterface
 {
-    public function getForecastByCityId(int $id);
+    public function getForecastByCityId(int $id): WeatherForecastData;
 
-    public function getCityById(int $id);
+    public function getCityById(int $id): ForecastCity;
 
-    public function getAllCities();
+    public function getAllCities(): array;
 
-    public function getCityByName(string $cityName);
-
-    public function matchCityNames(string $nameString);
+    public function matchCityNames(string $nameString): array;
 }
