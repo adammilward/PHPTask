@@ -25,8 +25,6 @@ The weather api requires a user to be logged in and provide a JWT to access any 
 User authentication was added from this tutorial:
 https://blog.logrocket.com/implementing-jwt-authentication-laravel-9/#test-application
 
-To create a JWT secret run the command ```php artisan jwt:secret```
-
 ## The two end points below allow a user to register and login.
 
 ### Register ```api/register```
