@@ -25,6 +25,8 @@ class WeatherController extends Controller
         ResponseFactory $jsonResponseFactory,
     )
     {
+        $this->middleware('auth:api');
+
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->weather = $weather;
     }
