@@ -90,13 +90,17 @@ The endponts below all take get requests.
 - ### ```weather/city/id/{id}```
   Returns the city data for a city.
 
-## Limitations and considerations
+## Limitations and Considerations
 
 ### Storing the cities data in a local file.
-It is recognised that retrieving the data from a file, as a large array, before searching is is slower than data base 
+I recognise that retrieving the data from a file, as a large array, before searching is  slower than database
 lookups.
-However for the purposes of the exercise it is quick and simple and does not require copying the database when 
+However for the purposes of the exercise it is quick and simple and does not require copying the database when
 installing on a new machine for testing.
 
-It would, perhaps, be possible to do away with all locally stored data and only use the Open Weather api for 
-retrieving all data. This would prevent the possibility of the local data being out of sync with Open Weather. 
+I also understand that files within the storage/public folder should not be committed to the repository, but this
+seemed
+simplest for a proof of concept.
+
+It would be better to do away with all locally stored data, and only use the Open Weather api for
+retrieving all data. This would prevent the possibility of the local data being out of sync with Open Weather.
