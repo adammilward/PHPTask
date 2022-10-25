@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WeatherController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,19 +18,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::controller(AuthController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::post('register', 'register');
+    Route::post('logout', 'logout');
+    Route::post('refresh', 'refresh');
+
+});
+
 /*
 |--------------------------------------------------------------------------
 | Weather API Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/weather/forecast/cityId/{id}',  [WeatherController::class, 'getForecastByCityId']);
-Route::get('/weather/city/id/{id}',  [WeatherController::class, 'getCityById']);
-Route::get('/weather/allCities', [WeatherController::class, 'getAllCities']);
-Route::get('/weather/cities/match/{nameString}',  [WeatherController::class, 'matchCityNames']);
-Route::get('/weather/city/lat/{lat}/lon/{lon}',  [WeatherController::class, 'getCityNearest']);
 
-// todo delete if not working
-//Route::resource('weather', WeatherController::class)
-//    ->missing(function (Request $request) {
-//        return Redirect::route('/');
-//    });
+Route::controller(WeatherController::class)->group(function () {
+    Route::get('/weather/forecast/cityId/{id}', 'getForecastByCityId');
+    Route::get('/weather/city/id/{id}', 'getCityById');
+    Route::get('/weather/allCities', 'getAllCities');
+    Route::get('/weather/cities/match/{nameString}', 'matchCityNames');
+    Route::get('/weather/city/lat/{lat}/lon/{lon}', 'getCityNearest');
+});
