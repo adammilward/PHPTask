@@ -12,6 +12,8 @@ To install run the flowing commands
  - composer install
  - cp .env.example .env
  - - set your database credentials in .env
+ - php artisan migrate
+ - - if prompted, answer "yes" to create database
  - php artisan jwt:secret
  - npm install
  - npm run build
