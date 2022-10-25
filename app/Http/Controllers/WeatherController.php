@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CityNotFoundException;
-use App\Models\ForecastCity;
+use App\Models\Weather\CityNotFoundException;
+use App\Models\Weather\ForecastCity;
 use App\Services\APIs\ErrorResponse;
 use App\Services\APIs\SuccessResponse;
 use App\Services\APIs\Weather\WeatherServiceInterface;

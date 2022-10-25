@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Weather;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,8 +10,7 @@ use Illuminate\Filesystem\FilesystemManager;
  * Data storage for OpenWeatherService
  *
  * Ideally this would use a database rather than flat files,
- * however my computer's mysql server is not working,
- * I hope this is sufficient for proof of concept.
+ * I however I feel it is simpler, for proof of concept not to add a database to the project
  *
  * Open weather API reference can be found here
  * https://openweathermap.org/current#one

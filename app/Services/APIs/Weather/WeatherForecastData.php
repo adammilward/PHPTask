@@ -7,7 +7,7 @@
 
 namespace App\Services\APIs\Weather;
 
-use App\Models\ForecastCity;
+use App\Models\Weather\ForecastCity;
 
 class WeatherForecastData implements \JsonSerializable
 {

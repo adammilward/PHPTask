@@ -7,8 +7,8 @@
 
 namespace App\Services\APIs\Weather;
 
-use App\Models\ForecastCity;
-use App\Models\OpenWeatherModel;
+use App\Models\Weather\ForecastCity;
+use App\Models\Weather\OpenWeatherModel;
 
 class OpenWeatherService implements WeatherServiceInterface
 {
@@ -21,7 +21,7 @@ class OpenWeatherService implements WeatherServiceInterface
 
     /**
      * @return array
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     public function getAllCities(): array
     {
@@ -31,8 +31,8 @@ class OpenWeatherService implements WeatherServiceInterface
     /**
      * @param int $cityId
      * @return WeatherForecastData
-     * @throws \App\Models\CityNotFoundException
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\CityNotFoundException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     public function getForecastByCityId(int $cityId): WeatherForecastData
     {
@@ -62,8 +62,8 @@ class OpenWeatherService implements WeatherServiceInterface
     /**
      * @param int $id
      * @return ForecastCity
-     * @throws \App\Models\CityNotFoundException
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\CityNotFoundException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     public function getCityById(int $id): ForecastCity
     {
@@ -74,7 +74,7 @@ class OpenWeatherService implements WeatherServiceInterface
      * @param float $lat
      * @param float $lon
      * @return ForecastCity
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     public function getCityNearest(float $lat, float $lon): ForecastCity
     {
@@ -84,7 +84,7 @@ class OpenWeatherService implements WeatherServiceInterface
     /**
      * @param string $nameString
      * @return array
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     public function matchCityNames(string $nameString): array
     {
@@ -94,8 +94,8 @@ class OpenWeatherService implements WeatherServiceInterface
     /**
      * @param array $data
      * @return WeatherForecastData
-     * @throws \App\Models\CityNotFoundException
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\CityNotFoundException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     private function buildForecastFromData(array $data): WeatherForecastData
     {

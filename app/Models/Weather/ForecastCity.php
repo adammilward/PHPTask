@@ -5,7 +5,7 @@
  * Date: 21/10/2022
  */
 
-namespace App\Models;
+namespace App\Models\Weather;
 
 /**
  * provides a consistent data structure for implementations of WeatherServiceInterface

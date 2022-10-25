@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\OpenWeatherModel;
+use App\Models\Weather\OpenWeatherModel;
 use App\Services\APIs\Weather\OpenWeatherService;
 use App\Services\APIs\Weather\WeatherServiceInterface;
 use Illuminate\Filesystem\FilesystemManager;

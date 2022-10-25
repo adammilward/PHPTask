@@ -5,7 +5,7 @@
  * Date: 20/10/2022
  */
 
-namespace App\Models;
+namespace App\Models\Weather;
 
 class WeatherModelException extends \Exception
 {

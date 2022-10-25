@@ -8,7 +8,7 @@
 namespace App\Services\APIs\Weather;
 
 
-use App\Models\ForecastCity;
+use App\Models\Weather\ForecastCity;
 
 Interface WeatherServiceInterface
 {
@@ -17,21 +17,21 @@ Interface WeatherServiceInterface
     /**
      * @param int $id
      * @return ForecastCity
-     * @throws \App\Models\CityNotFoundException
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\CityNotFoundException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     public function getCityById(int $id): ForecastCity;
 
     /**
      * @return array
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     public function getAllCities(): array;
 
     /**
      * @param string $nameString
      * @return array
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     public function matchCityNames(string $nameString): array;
 
@@ -39,7 +39,7 @@ Interface WeatherServiceInterface
      * @param float $lat
      * @param float $lon
      * @return ForecastCity
-     * @throws \App\Models\WeatherModelException
+     * @throws \App\Models\Weather\WeatherModelException
      */
     public function getCityNearest(float $lat, float $lon): ForecastCity;
 }

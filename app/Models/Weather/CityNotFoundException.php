@@ -5,7 +5,7 @@
  * Date: 21/10/2022
  */
 
-namespace App\Models;
+namespace App\Models\Weather;
 
 class CityNotFoundException extends \Exception
 {
