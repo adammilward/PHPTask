@@ -2,6 +2,21 @@
 
 ### requires php 8.1
 
+## Installation
+
+To install run the flowing commands
+
+ - git clone https://github.com/adammilward/PHPTask.git
+ - cd PHPTask
+ - git checkout phpTask
+ - composer install
+ - cp .env.example .env
+ - - set your database credentials in .env
+ - php artisan jwt:secret
+ - npm install
+ - npm run build
+ - php artisan serve
+
 ## User Authentication by JWT
 
 The weather api requires a user to be logged in and provide a JWT to access any endpoint.
@@ -26,7 +41,7 @@ Returns a JWT authorisation token, type: bearer
 
 Send a post request to ```api/login```
 containing the following form-data parameters
- - email
+ - emailcomposer require php-open-source-saver/jwt-auth
  - password
 
 Returns a JWT authorisation token, type: bearer
