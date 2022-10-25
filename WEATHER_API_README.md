@@ -4,7 +4,7 @@
 
 ## Installation
 
-To install run the flowing commands
+To install, run the flowing commands
 
  - git clone https://github.com/adammilward/PHPTask.git
  - cd PHPTask
@@ -43,12 +43,12 @@ Returns a JWT authorisation token, type: bearer
 
 Send a post request to ```api/login```
 containing the following form-data parameters
- - emailcomposer require php-open-source-saver/jwt-auth
+ - email
  - password
 
 Returns a JWT authorisation token, type: bearer
 
-The JWT authorisation token can be sent with get requests to the weather api. In postman go to the authorization tab, 
+The JWT authorisation token can be sent, with get requests to the weather api. In postman go to the authorization tab, 
 select 
 type bearer and paste the token into the text box.
 
@@ -66,7 +66,7 @@ A new JWT is issued and the old one (provided in the Authorization header) is in
 ## Using the API
 Accessing a weather forecast is expected to be a two step process (not including registering and logging in).
 
-If you already know a city id you can go straight to step 2.
+If you already know a city ID you can go straight to step 2.
 
 The endponts below all take get requests.
 
@@ -76,10 +76,10 @@ The endponts below all take get requests.
   Returns all available cities.
   This could be used to populate a search box.
 - ### ```weather/cities/match/{nameString}```
-  will return cities matching the value "nameString".
-  This could be used to provide a shortlist of cities ie. for a search box.
+  Will return cities matching the value "nameString".
+  This could be used to provide a shortlist of cities IE. for a search box.
 - ### ```weather/city/lat/{latitude}/lon/{longitude}```
-  Returns the city closest to the coordinates provided in Degrees.
+  Returns the city closest to the coordinates provided in degrees.
 
 ### Step 2 - request forecast by city ID
 - ### ```weather/forecast/cityId/{id}```
