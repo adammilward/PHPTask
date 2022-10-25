@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\WeatherController;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\Api\WeatherApiController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,17 +14,22 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+
 
 /*
 |--------------------------------------------------------------------------
 | Weather API Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/weather/forecast/cityId/{id}',  [WeatherController::class, 'getForecastByCityId']);
-Route::get('/weather/city/id/{id}',  [WeatherController::class, 'getCityById']);
-Route::get('/weather/allCities', [WeatherController::class, 'getAllCities']);
-Route::get('/weather/cities/match/{nameString}',  [WeatherController::class, 'matchCityNames']);
-Route::get('/weather/city/lat/{lat}/lon/{lon}',  [WeatherController::class, 'getCityNearest']);
+Route::get('/weather/forecast/cityId/{id}',  [WeatherApiController::class, 'getForecastByCityId']);
+Route::get('/weather/city/id/{id}',  [WeatherApiController::class, 'getCityById']);
+Route::get('/weather/allCities', [WeatherApiController::class, 'getAllCities']);
+Route::get('/weather/cities/match/{nameString}',  [WeatherApiController::class, 'matchCityNames']);
+Route::get('/weather/city/lat/{lat}/lon/{lon}',  [WeatherApiController::class, 'getCityNearest']);
 
 // todo delete if not working
 //Route::resource('weather', WeatherController::class)

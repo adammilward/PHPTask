@@ -6,12 +6,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "ext-curl": "*",
+        "ext-json": "*",
         "guzzlehttp/guzzle": "^7.2",
+        "illuminate/support": "^9.36",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
-      "ext-curl": "*",
-      "ext-json": "*"
+        "laravel/ui": "^4.0",
+        "tymon/jwt-auth": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
